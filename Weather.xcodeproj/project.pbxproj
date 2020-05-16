@@ -14,6 +14,10 @@
 		F2A15740246D88BE0014E03D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2A1573F246D88BE0014E03D /* Assets.xcassets */; };
 		F2A15743246D88BE0014E03D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2A15741246D88BE0014E03D /* LaunchScreen.storyboard */; };
 		F2A1574E246D88BE0014E03D /* WeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1574D246D88BE0014E03D /* WeatherTests.swift */; };
+		F2DC8EA0246DAE0C00F6C9B3 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8E9F246DAE0C00F6C9B3 /* APIService.swift */; };
+		F2DC8EA2246DB76400F6C9B3 /* APIRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8EA1246DB76400F6C9B3 /* APIRoutes.swift */; };
+		F2DC8EA5246DBDED00F6C9B3 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8EA4246DBDED00F6C9B3 /* MockURLSession.swift */; };
+		F2DC8EA7246DC67800F6C9B3 /* MockURLSessionDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8EA6246DC67800F6C9B3 /* MockURLSessionDataTask.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +42,10 @@
 		F2A15749246D88BE0014E03D /* WeatherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2A1574D246D88BE0014E03D /* WeatherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTests.swift; sourceTree = "<group>"; };
 		F2A1574F246D88BE0014E03D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F2DC8E9F246DAE0C00F6C9B3 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		F2DC8EA1246DB76400F6C9B3 /* APIRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRoutes.swift; sourceTree = "<group>"; };
+		F2DC8EA4246DBDED00F6C9B3 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		F2DC8EA6246DC67800F6C9B3 /* MockURLSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSessionDataTask.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +87,7 @@
 		F2A15735246D88BC0014E03D /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				F2DC8E9E246DADF000F6C9B3 /* Services */,
 				F2A15736246D88BC0014E03D /* AppDelegate.swift */,
 				F2A15738246D88BC0014E03D /* SceneDelegate.swift */,
 				F2A1573A246D88BC0014E03D /* ViewController.swift */,
@@ -93,10 +102,29 @@
 		F2A1574C246D88BE0014E03D /* WeatherTests */ = {
 			isa = PBXGroup;
 			children = (
+				F2DC8EA3246DBDCF00F6C9B3 /* Mocks */,
 				F2A1574D246D88BE0014E03D /* WeatherTests.swift */,
 				F2A1574F246D88BE0014E03D /* Info.plist */,
 			);
 			path = WeatherTests;
+			sourceTree = "<group>";
+		};
+		F2DC8E9E246DADF000F6C9B3 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F2DC8E9F246DAE0C00F6C9B3 /* APIService.swift */,
+				F2DC8EA1246DB76400F6C9B3 /* APIRoutes.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F2DC8EA3246DBDCF00F6C9B3 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				F2DC8EA4246DBDED00F6C9B3 /* MockURLSession.swift */,
+				F2DC8EA6246DC67800F6C9B3 /* MockURLSessionDataTask.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,7 +229,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2A1573B246D88BC0014E03D /* ViewController.swift in Sources */,
+				F2DC8EA2246DB76400F6C9B3 /* APIRoutes.swift in Sources */,
 				F2A15737246D88BC0014E03D /* AppDelegate.swift in Sources */,
+				F2DC8EA0246DAE0C00F6C9B3 /* APIService.swift in Sources */,
 				F2A15739246D88BC0014E03D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +240,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2DC8EA5246DBDED00F6C9B3 /* MockURLSession.swift in Sources */,
+				F2DC8EA7246DC67800F6C9B3 /* MockURLSessionDataTask.swift in Sources */,
 				F2A1574E246D88BE0014E03D /* WeatherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,7 +326,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -348,7 +380,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -363,8 +395,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JZBJFDL449;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Weather/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -372,7 +405,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xyz.alihen.Weather;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -381,8 +414,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JZBJFDL449;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Weather/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -390,7 +424,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = xyz.alihen.Weather;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
