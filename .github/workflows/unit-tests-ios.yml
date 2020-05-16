@@ -1,0 +1,32 @@
+name: Unit Tests - iOS
+
+on:
+  push:
+    branches:
+      - master
+    
+  pull_request:
+    types: [ready_for_review, edited, synchronize]
+
+jobs:
+  unit-test-app:
+    name: Unit Test App
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache Gems
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-   
+
+      - name: Build and Test
+        uses: maierj/fastlane-action@v1.4.0
+        with:
+          lane: 'app_unit_test'
+          bundle-install-path: 'vendor'
