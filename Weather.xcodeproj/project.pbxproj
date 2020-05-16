@@ -14,6 +14,12 @@
 		F2A15740246D88BE0014E03D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2A1573F246D88BE0014E03D /* Assets.xcassets */; };
 		F2A15743246D88BE0014E03D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2A15741246D88BE0014E03D /* LaunchScreen.storyboard */; };
 		F2A1574E246D88BE0014E03D /* WeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A1574D246D88BE0014E03D /* WeatherTests.swift */; };
+		F2BF0A42246FD98A0055380C /* WeatherAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BF0A41246FD98A0055380C /* WeatherAPIService.swift */; };
+		F2BF0A45246FDBD80055380C /* CurrentWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BF0A44246FDBD80055380C /* CurrentWeatherData.swift */; };
+		F2BF0A48246FDDAC0055380C /* ResponseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BF0A47246FDDAC0055380C /* ResponseHelper.swift */; };
+		F2BF0A4A246FE0F20055380C /* WeatherError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BF0A49246FE0F20055380C /* WeatherError.swift */; };
+		F2BF0A4C246FE2260055380C /* APIResponseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BF0A4B246FE2260055380C /* APIResponseError.swift */; };
+		F2BF0A4E246FF0A70055380C /* DayForecastData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BF0A4D246FF0A70055380C /* DayForecastData.swift */; };
 		F2DC8EA0246DAE0C00F6C9B3 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8E9F246DAE0C00F6C9B3 /* APIService.swift */; };
 		F2DC8EA2246DB76400F6C9B3 /* APIRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8EA1246DB76400F6C9B3 /* APIRoutes.swift */; };
 		F2DC8EA5246DBDED00F6C9B3 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DC8EA4246DBDED00F6C9B3 /* MockURLSession.swift */; };
@@ -42,6 +48,12 @@
 		F2A15749246D88BE0014E03D /* WeatherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2A1574D246D88BE0014E03D /* WeatherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTests.swift; sourceTree = "<group>"; };
 		F2A1574F246D88BE0014E03D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F2BF0A41246FD98A0055380C /* WeatherAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAPIService.swift; sourceTree = "<group>"; };
+		F2BF0A44246FDBD80055380C /* CurrentWeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherData.swift; sourceTree = "<group>"; };
+		F2BF0A47246FDDAC0055380C /* ResponseHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHelper.swift; sourceTree = "<group>"; };
+		F2BF0A49246FE0F20055380C /* WeatherError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherError.swift; sourceTree = "<group>"; };
+		F2BF0A4B246FE2260055380C /* APIResponseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResponseError.swift; sourceTree = "<group>"; };
+		F2BF0A4D246FF0A70055380C /* DayForecastData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayForecastData.swift; sourceTree = "<group>"; };
 		F2DC8E9F246DAE0C00F6C9B3 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		F2DC8EA1246DB76400F6C9B3 /* APIRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRoutes.swift; sourceTree = "<group>"; };
 		F2DC8EA4246DBDED00F6C9B3 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
@@ -87,6 +99,8 @@
 		F2A15735246D88BC0014E03D /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				F2BF0A46246FDD970055380C /* Helpers */,
+				F2BF0A43246FDBC70055380C /* Models */,
 				F2DC8E9E246DADF000F6C9B3 /* Services */,
 				F2A15736246D88BC0014E03D /* AppDelegate.swift */,
 				F2A15738246D88BC0014E03D /* SceneDelegate.swift */,
@@ -109,11 +123,31 @@
 			path = WeatherTests;
 			sourceTree = "<group>";
 		};
+		F2BF0A43246FDBC70055380C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F2BF0A44246FDBD80055380C /* CurrentWeatherData.swift */,
+				F2BF0A49246FE0F20055380C /* WeatherError.swift */,
+				F2BF0A4D246FF0A70055380C /* DayForecastData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F2BF0A46246FDD970055380C /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				F2BF0A47246FDDAC0055380C /* ResponseHelper.swift */,
+				F2BF0A4B246FE2260055380C /* APIResponseError.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		F2DC8E9E246DADF000F6C9B3 /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				F2DC8E9F246DAE0C00F6C9B3 /* APIService.swift */,
 				F2DC8EA1246DB76400F6C9B3 /* APIRoutes.swift */,
+				F2BF0A41246FD98A0055380C /* WeatherAPIService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -228,11 +262,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2BF0A4C246FE2260055380C /* APIResponseError.swift in Sources */,
+				F2BF0A45246FDBD80055380C /* CurrentWeatherData.swift in Sources */,
 				F2A1573B246D88BC0014E03D /* ViewController.swift in Sources */,
 				F2DC8EA2246DB76400F6C9B3 /* APIRoutes.swift in Sources */,
 				F2A15737246D88BC0014E03D /* AppDelegate.swift in Sources */,
+				F2BF0A42246FD98A0055380C /* WeatherAPIService.swift in Sources */,
 				F2DC8EA0246DAE0C00F6C9B3 /* APIService.swift in Sources */,
+				F2BF0A48246FDDAC0055380C /* ResponseHelper.swift in Sources */,
+				F2BF0A4A246FE0F20055380C /* WeatherError.swift in Sources */,
 				F2A15739246D88BC0014E03D /* SceneDelegate.swift in Sources */,
+				F2BF0A4E246FF0A70055380C /* DayForecastData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

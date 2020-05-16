@@ -20,7 +20,7 @@ protocol APIDefinition {
 
 enum WeatherAPIRoute {
     case currentWeather(String)
-    case forecast(String)
+    case forecastDaily(String)
 }
 
 extension WeatherAPIRoute: APIDefinition {
@@ -40,17 +40,17 @@ extension WeatherAPIRoute: APIDefinition {
         switch self {
         case .currentWeather:
             return "weather"
-        case .forecast:
+        case .forecastDaily:
             return "forecast"
         }
     }
 
     var parameters: [URLQueryItem] {
         switch self {
-        case .currentWeather(let query), .forecast(let query):
+        case .currentWeather(let query), .forecastDaily(let query):
             return [
                 URLQueryItem(name: "q", value: query),
-                URLQueryItem(name: "api-key", value: "")
+                URLQueryItem(name: "appid", value: "4a6385d50898e1b147ad6f3a2a3c4929")
             ]
         }
     }

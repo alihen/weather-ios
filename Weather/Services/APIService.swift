@@ -8,10 +8,11 @@
 
 import Foundation
 
-struct APIService {
+class APIService {
 
     private let session: URLSession
     typealias APIHandler = (Result<Data, APIError>) -> Void
+    typealias NetworkServiceResponse<T: Decodable> = (Result<T, APIResponseError>) -> Void
 
     init(session: URLSession = URLSession.shared) {
         self.session = session
@@ -28,6 +29,7 @@ struct APIService {
             completion(.failure(.invalidURL))
             return
         }
+        debugPrint(url.absoluteString)
 
         let task = session.dataTask(with: url) { (data, _, error) in
             if let error = error {
