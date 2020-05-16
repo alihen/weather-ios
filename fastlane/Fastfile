@@ -1,0 +1,21 @@
+skip_docs()
+default_platform(:ios)
+xcversion(version: "11.4.1")
+
+platform :ios do
+  desc "Description of what the lane does"
+
+  lane :app_unit_test do
+    scan(
+      scheme: "Weather",
+      only_testing: ["WeatherTests"],
+      clean: true,
+      code_coverage: true,
+      skip_slack: true,
+      derived_data_path: "Build/",
+      device: "iPhone 8",
+      prelaunch_simulator: true,
+      fail_build: false,
+    )
+  end
+end
