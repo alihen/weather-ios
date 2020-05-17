@@ -10,6 +10,12 @@ import UIKit
 
 class HomePresenter: NSObject {
 
+    let interactor = HomeInteractor()
+    let location = "Cape Town"
+    var currentWeatherData: CurrentWeatherData?
+}
+
+extension HomePresenter: HomePresenterProtocol {
     func registerCells(collectionView: UICollectionView) {
         collectionView.register(ForecastCollectionViewCell.self, forCellWithReuseIdentifier: ForecastCollectionViewCell.reuseId)
         collectionView.register(SummaryCollectionViewCell.self, forCellWithReuseIdentifier: SummaryCollectionViewCell.reuseId)
@@ -18,6 +24,28 @@ class HomePresenter: NSObject {
     func setupDelegates(collectionView: UICollectionView) {
         collectionView.delegate = self
         collectionView.dataSource = self
+    }
+
+    func loadWeatherData(location: String, completion: @escaping (Error?) -> Void) {
+        interactor.getWeatherData(location: self.location) { (weatherData, error) in
+            if weatherData != nil {
+                self.currentWeatherData = weatherData
+            }
+            completion(error)
+        }
+    }
+
+    func setTempAndDescriptionLabels(tempLabel: UILabel, descriptionLabel: UILabel) {
+        guard
+            let weatherData = currentWeatherData,
+            let currentConditions = weatherData.weather.first?.weatherDescription else {
+            return
+        }
+
+        let currentTemp = Int(weatherData.main.temp)
+
+        tempLabel.text = "\(currentTemp)°"
+        descriptionLabel.text = currentConditions.uppercased()
     }
 }
 
@@ -40,6 +68,19 @@ extension HomePresenter: UICollectionViewDelegate, UICollectionViewDataSource {
         case 0:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCollectionViewCell.reuseId, for: indexPath) as! SummaryCollectionViewCell
             cell.styleCell(item: indexPath.row)
+            guard let weatherData = currentWeatherData else {
+                return cell
+            }
+            switch indexPath.row {
+            case 0:
+                cell.tempLabel.text = "\(Int(weatherData.main.tempMin))°"
+            case 1:
+                cell.tempLabel.text = "\(Int(weatherData.main.temp))°"
+            case 2:
+                cell.tempLabel.text = "\(Int(weatherData.main.tempMax))°"
+            default:
+                break
+            }
             return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ForecastCollectionViewCell.reuseId, for: indexPath) as! ForecastCollectionViewCell

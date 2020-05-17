@@ -6,4 +6,11 @@
 //  Copyright © 2020 Alastair Hendricks. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+protocol HomePresenterProtocol {
+    func registerCells(collectionView: UICollectionView)
+    func setupDelegates(collectionView: UICollectionView)
+    func loadWeatherData(location: String, completion: @escaping (Error?) -> Void)
+    func setTempAndDescriptionLabels(tempLabel: UILabel, descriptionLabel: UILabel)
+}

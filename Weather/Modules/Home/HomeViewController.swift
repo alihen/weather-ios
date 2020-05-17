@@ -10,7 +10,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
-    let presenter = HomePresenter()
+    let presenter: HomePresenterProtocol = HomePresenter()
 
     let mainTempImageView: UIImageView = {
         let imgvw = UIImageView(autolayout: true)
@@ -34,6 +34,9 @@ class HomeViewController: UIViewController {
         lbl.text = "Sunny".uppercased()
         lbl.textAlignment = .center
         lbl.textColor = UIColor.white
+        lbl.numberOfLines = 2
+        lbl.adjustsFontSizeToFitWidth = true
+        lbl.minimumScaleFactor = 0.7
         return lbl
     }()
 
@@ -54,6 +57,18 @@ class HomeViewController: UIViewController {
 
         presenter.registerCells(collectionView: detailCollectionView)
         presenter.setupDelegates(collectionView: detailCollectionView)
+        presenter.loadWeatherData(location: "") { (error) in
+            if error == nil {
+                DispatchQueue.main.async {
+                    self.detailCollectionView.reloadSections(IndexSet(integer: 0))
+                    self.updateLabels()
+                }
+            }
+        }
+    }
+
+    func updateLabels() {
+        presenter.setTempAndDescriptionLabels(tempLabel: mainTempLabel, descriptionLabel: mainTempSubtitleLabel)
     }
 
     func setupAppearance() {
@@ -71,6 +86,8 @@ class HomeViewController: UIViewController {
         view.addSubview(mainTempSubtitleLabel)
         mainTempSubtitleLabel.topAnchor.constraint(equalTo: mainTempLabel.bottomAnchor).isActive = true
         mainTempSubtitleLabel.centerXAnchor.constraint(equalTo: mainTempImageView.centerXAnchor).isActive = true
+        mainTempSubtitleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 90).isActive = true
+        mainTempSubtitleLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -90).isActive = true
 
 
         view.addSubview(detailCollectionView)
