@@ -78,6 +78,5 @@ class SummaryCollectionViewCell: UICollectionViewCell {
         tempLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 8).isActive = true
         tempLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -8).isActive = true
         tempLabel.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-
     }
 }

@@ -55,7 +55,7 @@ extension HomePresenter: UICollectionViewDelegateFlowLayout {
         case 0:
             return CGSize(width: (UIScreen.main.bounds.width/3)-10, height: 48)
         default:
-            return CGSize(width: UIScreen.main.bounds.width, height: 48)
+            return CGSize(width: UIScreen.main.bounds.width, height: 40)
         }
 
     }
