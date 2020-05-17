@@ -10,6 +10,8 @@ import Foundation
 
 class MockURLSession: URLSession {
 
+    override init() {}
+
     var data: Data?
     var error: Error?
 
