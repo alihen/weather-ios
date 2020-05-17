@@ -19,6 +19,8 @@ class APIService {
     }
 
     func get(endpoint: APIDefinition, completion: @escaping APIHandler) {
+        session.configuration.httpAdditionalHeaders = endpoint.headers
+
         var components = URLComponents()
         components.scheme = endpoint.scheme
         components.host = endpoint.host
