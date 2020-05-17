@@ -6,8 +6,10 @@ platform :ios do
   desc "Description of what the lane does"
 
   lane :app_unit_test do
+    cocoapods
     scan(
       scheme: "Weather",
+      workspace: "Weather.xcworkspace",
       only_testing: ["WeatherTests"],
       clean: true,
       code_coverage: true,
