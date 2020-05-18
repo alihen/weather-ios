@@ -8,7 +8,7 @@
 
 import Foundation
 
-class HomeInteractor {
+class HomeInteractor: HomeInteractorProtocol {
 
     let weatherAPIService = WeatherAPIService()
 
@@ -17,6 +17,20 @@ class HomeInteractor {
             switch result {
             case .success(let weather):
                 completion(weather, nil)
+                return
+            case .failure(let error):
+                completion(nil, error)
+                return
+            }
+        }
+    }
+
+    func getForecastData(location: String, completion: @escaping ([Forecast]?, Error?) -> Void) {
+        weatherAPIService.getDailyWeatherForecast(forLocation: location) { result in
+            switch result {
+            case .success(let weather):
+                let dailyWeather = weather.days.filter({ $0.dtTxt.hasSuffix("15:00:00")})
+                completion(dailyWeather, nil)
                 return
             case .failure(let error):
                 completion(nil, error)

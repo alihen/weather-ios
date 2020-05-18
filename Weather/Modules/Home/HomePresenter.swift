@@ -10,9 +10,14 @@ import UIKit
 
 class HomePresenter: NSObject {
 
-    let interactor = HomeInteractor()
+    let interactor: HomeInteractorProtocol
     let location = "Cape Town"
     var currentWeatherData: CurrentWeatherData?
+    var dailyForecasts: [Forecast] = []
+
+    init(interactor: HomeInteractorProtocol = HomeInteractor()) {
+        self.interactor = interactor
+    }
 }
 
 extension HomePresenter: HomePresenterProtocol {
@@ -31,7 +36,13 @@ extension HomePresenter: HomePresenterProtocol {
             if weatherData != nil {
                 self.currentWeatherData = weatherData
             }
-            completion(error)
+
+            self.interactor.getForecastData(location: self.location) { (forecasts, error) in
+                if let forecasts = forecasts {
+                    self.dailyForecasts = forecasts
+                }
+                completion(error)
+            }
         }
     }
 
@@ -47,6 +58,28 @@ extension HomePresenter: HomePresenterProtocol {
         tempLabel.text = "\(currentTemp)°"
         descriptionLabel.text = currentConditions.uppercased()
     }
+
+    func getContextForCurrentConditions() -> WeatherContext {
+        guard let weatherCode = currentWeatherData?.weather.first?.id else {
+            return .sunny
+        }
+        return getContextForId(id: weatherCode)
+    }
+
+    func getContextForId(id: Int) -> WeatherContext {
+        switch id {
+        case 200..<600:
+            return .rainy
+        case 600..<700:
+            return .cloudy
+        case 800:
+            return .sunny
+        case 801..<900:
+            return .cloudy
+        default:
+            return .sunny
+        }
+    }
 }
 
 extension HomePresenter: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -58,8 +91,10 @@ extension HomePresenter: UICollectionViewDelegate, UICollectionViewDataSource {
         switch section {
         case 0:
             return 3
+        case 1:
+            return dailyForecasts.count
         default:
-            return 5
+            return 0
         }
     }
 
@@ -84,8 +119,24 @@ extension HomePresenter: UICollectionViewDelegate, UICollectionViewDataSource {
             return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ForecastCollectionViewCell.reuseId, for: indexPath) as! ForecastCollectionViewCell
+            let item = dailyForecasts[indexPath.row]
+            cell.dayLabel.text = getDayOfWeek(timestamp: item.dt)
+            cell.tempLabel.text = "\(Int(item.main.temp))°"
+
+            if let conditionId = item.weather.first?.id {
+                let cellImageName = getContextForId(id: conditionId).forecastIconName
+                cell.weatherImageView.image = UIImage(named: cellImageName)
+            }
             return cell
         }
+    }
+
+    private func getDayOfWeek(timestamp: Int) -> String {
+        let date = Date(timeIntervalSince1970: Double(timestamp))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"
+        let weekDay = dateFormatter.string(from:date)
+        return weekDay
     }
 }
 

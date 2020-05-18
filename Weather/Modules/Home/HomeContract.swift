@@ -9,8 +9,18 @@
 import UIKit
 
 protocol HomePresenterProtocol {
+    var currentWeatherData: CurrentWeatherData? { get set }
+    var dailyForecasts: [Forecast] { get set }
+
     func registerCells(collectionView: UICollectionView)
     func setupDelegates(collectionView: UICollectionView)
     func loadWeatherData(location: String, completion: @escaping (Error?) -> Void)
     func setTempAndDescriptionLabels(tempLabel: UILabel, descriptionLabel: UILabel)
+    func getContextForCurrentConditions() -> WeatherContext
+    func getContextForId(id: Int) -> WeatherContext
+}
+
+protocol HomeInteractorProtocol {
+    func getWeatherData(location: String, completion: @escaping (CurrentWeatherData?, Error?) -> Void)
+    func getForecastData(location: String, completion: @escaping ([Forecast]?, Error?) -> Void)
 }

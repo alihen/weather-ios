@@ -11,6 +11,8 @@ import UIKit
 class HomeViewController: UIViewController {
 
     let presenter: HomePresenterProtocol = HomePresenter()
+    var weatherContext = WeatherContext.sunny
+    var titleConstraint: NSLayoutConstraint?
 
     let mainTempImageView: UIImageView = {
         let imgvw = UIImageView(autolayout: true)
@@ -21,7 +23,7 @@ class HomeViewController: UIViewController {
 
     let mainTempLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
-        lbl.font = UIFont.systemFont(ofSize: 80, weight: .regular)
+        lbl.font = UIFont.systemFont(ofSize: 70, weight: .regular)
         lbl.text = "15°"
         lbl.textAlignment = .center
         lbl.textColor = UIColor.white
@@ -30,7 +32,7 @@ class HomeViewController: UIViewController {
 
     let mainTempSubtitleLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
-        lbl.font = UIFont.systemFont(ofSize: 30, weight: .semibold)
+        lbl.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
         lbl.text = "Sunny".uppercased()
         lbl.textAlignment = .center
         lbl.textColor = UIColor.white
@@ -60,8 +62,9 @@ class HomeViewController: UIViewController {
         presenter.loadWeatherData(location: "") { (error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    self.detailCollectionView.reloadSections(IndexSet(integer: 0))
+                    self.detailCollectionView.reloadData()
                     self.updateLabels()
+                    self.updateContext()
                 }
             }
         }
@@ -69,6 +72,25 @@ class HomeViewController: UIViewController {
 
     func updateLabels() {
         presenter.setTempAndDescriptionLabels(tempLabel: mainTempLabel, descriptionLabel: mainTempSubtitleLabel)
+    }
+
+    func updateContext() {
+        weatherContext = presenter.getContextForCurrentConditions()
+        UIView.animate(withDuration: 0.5) {
+            self.detailCollectionView.backgroundColor = self.weatherContext.color
+            self.titleConstraint?.constant = self.weatherContext.titleYOffset
+            self.view.layoutSubviews()
+        }
+
+        let newImage = UIImage(named: weatherContext.imageName)
+        UIView.transition(with: mainTempImageView,
+                          duration: 0.5,
+                          options: .transitionCrossDissolve,
+                          animations: {
+                            self.mainTempImageView.image = newImage
+        })
+
+
     }
 
     func setupAppearance() {
@@ -80,7 +102,8 @@ class HomeViewController: UIViewController {
 
         view.addSubview(mainTempLabel)
         mainTempLabel.centerXAnchor.constraint(equalTo: mainTempImageView.centerXAnchor).isActive = true
-        mainTempLabel.centerYAnchor.constraint(equalTo: mainTempImageView.centerYAnchor).isActive = true
+        titleConstraint = mainTempLabel.centerYAnchor.constraint(equalTo: mainTempImageView.centerYAnchor, constant: weatherContext.titleYOffset)
+        titleConstraint?.isActive = true
 
 
         view.addSubview(mainTempSubtitleLabel)
@@ -95,5 +118,55 @@ class HomeViewController: UIViewController {
         detailCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         detailCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         detailCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+}
+
+enum WeatherContext {
+    case cloudy
+    case rainy
+    case sunny
+
+    var imageName: String {
+        switch self {
+        case .cloudy:
+            return "coastal-cloudy"
+        case .rainy:
+            return "coastal-rainy"
+        case .sunny:
+            return "coastal-sunny"
+        }
+    }
+
+    var color: UIColor {
+        switch self {
+        case .cloudy:
+            return UIColor.coastalLightGrey
+        case .rainy:
+            return UIColor.coastalDarkGrey
+        case .sunny:
+            return UIColor.coastalBlue
+        }
+    }
+
+    var forecastIconName: String {
+        switch self {
+        case .cloudy:
+            return "forecast-partlysunny"
+        case .rainy:
+            return "forecast-rain"
+        case .sunny:
+            return "forecast-clear"
+        }
+    }
+
+    var titleYOffset: CGFloat {
+        switch self {
+        case .cloudy:
+            return -50
+        case .rainy:
+            return -50
+        case .sunny:
+            return 0
+        }
     }
 }
