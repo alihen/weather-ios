@@ -8,9 +8,13 @@
 
 import Foundation
 
-class HomeInteractor: HomeInteractorProtocol {
+class HomeInteractor: NSObject, HomeInteractorProtocol {
 
-    let weatherAPIService = WeatherAPIService()
+    let weatherAPIService: WeatherAPIService
+
+    init(service: WeatherAPIService = WeatherAPIService()) {
+        self.weatherAPIService = service
+    }
 
     func getWeatherData(location: String, completion: @escaping (CurrentWeatherData?, Error?) -> Void) {
         weatherAPIService.getCurrentWeatherData(forLocation: location) { result in

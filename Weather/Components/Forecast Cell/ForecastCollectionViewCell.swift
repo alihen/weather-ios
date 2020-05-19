@@ -14,9 +14,8 @@ class ForecastCollectionViewCell: UICollectionViewCell {
 
     let dayLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
-        lbl.text = "Weekday"
         lbl.textColor = UIColor.white
-        lbl.font = UIFont.systemFont(ofSize: 14)
+        lbl.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         return lbl
     }()
 
@@ -29,7 +28,6 @@ class ForecastCollectionViewCell: UICollectionViewCell {
 
     let tempLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
-        lbl.text = "15°"
         lbl.textAlignment = .right
         lbl.textColor = UIColor.white
         lbl.font = UIFont.systemFont(ofSize: 14)

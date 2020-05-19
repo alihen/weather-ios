@@ -7,20 +7,25 @@
 //
 
 import UIKit
+import CoreLocation
 
 class HomePresenter: NSObject {
 
     let interactor: HomeInteractorProtocol
-    let location = "Cape Town"
     var currentWeatherData: CurrentWeatherData?
     var dailyForecasts: [Forecast] = []
+    let locationManager = LocationService()
+    weak var viewController: HomeViewController?
 
     init(interactor: HomeInteractorProtocol = HomeInteractor()) {
         self.interactor = interactor
+        super.init()
+        self.locationManager.delegate = self
     }
 }
 
 extension HomePresenter: HomePresenterProtocol {
+
     func registerCells(collectionView: UICollectionView) {
         collectionView.register(ForecastCollectionViewCell.self, forCellWithReuseIdentifier: ForecastCollectionViewCell.reuseId)
         collectionView.register(SummaryCollectionViewCell.self, forCellWithReuseIdentifier: SummaryCollectionViewCell.reuseId)
@@ -32,12 +37,12 @@ extension HomePresenter: HomePresenterProtocol {
     }
 
     func loadWeatherData(location: String, completion: @escaping (Error?) -> Void) {
-        interactor.getWeatherData(location: self.location) { (weatherData, error) in
+        interactor.getWeatherData(location: location) { (weatherData, error) in
             if weatherData != nil {
                 self.currentWeatherData = weatherData
             }
 
-            self.interactor.getForecastData(location: self.location) { (forecasts, error) in
+            self.interactor.getForecastData(location: location) { (forecasts, error) in
                 if let forecasts = forecasts {
                     self.dailyForecasts = forecasts
                 }
@@ -53,7 +58,7 @@ extension HomePresenter: HomePresenterProtocol {
             return
         }
 
-        let currentTemp = Int(weatherData.main.temp)
+        let currentTemp = Int(weatherData.main.temp.rounded())
 
         tempLabel.text = "\(currentTemp)°"
         descriptionLabel.text = currentConditions.uppercased()
@@ -80,75 +85,38 @@ extension HomePresenter: HomePresenterProtocol {
             return .sunny
         }
     }
-}
 
-extension HomePresenter: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 3
-        case 1:
-            return dailyForecasts.count
-        default:
-            return 0
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCollectionViewCell.reuseId, for: indexPath) as! SummaryCollectionViewCell
-            cell.styleCell(item: indexPath.row)
-            guard let weatherData = currentWeatherData else {
-                return cell
-            }
-            switch indexPath.row {
-            case 0:
-                cell.tempLabel.text = "\(Int(weatherData.main.tempMin))°"
-            case 1:
-                cell.tempLabel.text = "\(Int(weatherData.main.temp))°"
-            case 2:
-                cell.tempLabel.text = "\(Int(weatherData.main.tempMax))°"
-            default:
-                break
-            }
-            return cell
-        default:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ForecastCollectionViewCell.reuseId, for: indexPath) as! ForecastCollectionViewCell
-            let item = dailyForecasts[indexPath.row]
-            cell.dayLabel.text = getDayOfWeek(timestamp: item.dt)
-            cell.tempLabel.text = "\(Int(item.main.temp))°"
-
-            if let conditionId = item.weather.first?.id {
-                let cellImageName = getContextForId(id: conditionId).forecastIconName
-                cell.weatherImageView.image = UIImage(named: cellImageName)
-            }
-            return cell
-        }
-    }
-
-    private func getDayOfWeek(timestamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: Double(timestamp))
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE"
-        let weekDay = dateFormatter.string(from:date)
-        return weekDay
+    func startUpdatingLocation() {
+        locationManager.startUpdatingLocation()
     }
 }
 
-extension HomePresenter: UICollectionViewDelegateFlowLayout {
+extension HomePresenter: CLLocationManagerDelegate {
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch indexPath.section {
-        case 0:
-            return CGSize(width: (UIScreen.main.bounds.width/3)-10, height: 48)
+    func locationManager(_ manager: CLLocationManager,
+                         didChangeAuthorization status: CLAuthorizationStatus) {
+
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            break
         default:
-            return CGSize(width: UIScreen.main.bounds.width, height: 40)
+            break
         }
+    }
 
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if locations.isEmpty {
+            return
+        }
+        
+        locationManager.stopUpdatingLocation()
+        locationManager.getPlaceForCurrentLocation { placemark in
+            if
+                let locality = placemark?.locality,
+                let country = placemark?.country {
+                self.viewController?.location = "\(locality), \(country)"
+                self.viewController?.loadWeatherInfo()
+            }
+        }
     }
 }

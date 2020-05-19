@@ -1,6 +1,7 @@
 platform :ios, "13.0"
 
 target "Weather" do
+  pod "GooglePlaces"
   use_frameworks!
 
   target "WeatherTests" do

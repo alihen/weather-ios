@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import GooglePlaces
 
 class HomeViewController: UIViewController {
 
-    let presenter: HomePresenterProtocol = HomePresenter()
+    var presenter: HomePresenterProtocol = HomePresenter()
     var weatherContext = WeatherContext.sunny
     var titleConstraint: NSLayoutConstraint?
+    var location: String? = nil
 
     let mainTempImageView: UIImageView = {
         let imgvw = UIImageView(autolayout: true)
@@ -24,7 +26,7 @@ class HomeViewController: UIViewController {
     let mainTempLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
         lbl.font = UIFont.systemFont(ofSize: 70, weight: .regular)
-        lbl.text = "15°"
+        lbl.text = "--°"
         lbl.textAlignment = .center
         lbl.textColor = UIColor.white
         return lbl
@@ -33,7 +35,6 @@ class HomeViewController: UIViewController {
     let mainTempSubtitleLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
         lbl.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
-        lbl.text = "Sunny".uppercased()
         lbl.textAlignment = .center
         lbl.textColor = UIColor.white
         lbl.numberOfLines = 2
@@ -50,18 +51,37 @@ class HomeViewController: UIViewController {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = UIColor.coastalBlue
+        cv.alwaysBounceVertical = true
         return cv
+    }()
+
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(loadWeatherInfo), for: .valueChanged)
+        refreshControl.tintColor = UIColor.white
+        return refreshControl
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupAppearance()
 
         presenter.registerCells(collectionView: detailCollectionView)
         presenter.setupDelegates(collectionView: detailCollectionView)
-        presenter.loadWeatherData(location: "") { (error) in
-            if error == nil {
-                DispatchQueue.main.async {
+        presenter.viewController = self
+        loadWeatherInfo()
+    }
+
+    @objc func loadWeatherInfo() {
+        guard let location = self.location else {
+            return
+        }
+        self.title = location
+        presenter.loadWeatherData(location: location) { (error) in
+            DispatchQueue.main.async {
+                self.refreshControl.endRefreshing()
+                if error == nil {
                     self.detailCollectionView.reloadData()
                     self.updateLabels()
                     self.updateContext()
@@ -89,8 +109,34 @@ class HomeViewController: UIViewController {
                           animations: {
                             self.mainTempImageView.image = newImage
         })
+    }
 
+    func setupNavigationBar() {
+        let leftButton = UIBarButtonItem(image: UIImage(systemName: "location.fill"), style: .plain, target: self, action: #selector(leftButtonAction))
+        leftButton.tintColor = UIColor.white
+        self.navigationItem.leftBarButtonItem = leftButton
 
+        let rightButton = UIBarButtonItem(image: UIImage(systemName: "plus.circle"), style: .plain, target: self, action: #selector(rightButtonAction))
+        rightButton.tintColor = UIColor.white
+        self.navigationItem.rightBarButtonItem = rightButton
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = .clear
+    }
+
+    @objc func rightButtonAction() {
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+
+        let filter = GMSAutocompleteFilter()
+        filter.type = .city
+        autocompleteController.autocompleteFilter = filter
+        self.present(autocompleteController, animated: true, completion: nil)
+    }
+
+    @objc func leftButtonAction() {
+        presenter.startUpdatingLocation()
     }
 
     func setupAppearance() {
@@ -118,55 +164,6 @@ class HomeViewController: UIViewController {
         detailCollectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         detailCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         detailCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-    }
-}
-
-enum WeatherContext {
-    case cloudy
-    case rainy
-    case sunny
-
-    var imageName: String {
-        switch self {
-        case .cloudy:
-            return "coastal-cloudy"
-        case .rainy:
-            return "coastal-rainy"
-        case .sunny:
-            return "coastal-sunny"
-        }
-    }
-
-    var color: UIColor {
-        switch self {
-        case .cloudy:
-            return UIColor.coastalLightGrey
-        case .rainy:
-            return UIColor.coastalDarkGrey
-        case .sunny:
-            return UIColor.coastalBlue
-        }
-    }
-
-    var forecastIconName: String {
-        switch self {
-        case .cloudy:
-            return "forecast-partlysunny"
-        case .rainy:
-            return "forecast-rain"
-        case .sunny:
-            return "forecast-clear"
-        }
-    }
-
-    var titleYOffset: CGFloat {
-        switch self {
-        case .cloudy:
-            return -50
-        case .rainy:
-            return -50
-        case .sunny:
-            return 0
-        }
+        detailCollectionView.addSubview(refreshControl)
     }
 }

@@ -11,6 +11,7 @@ import UIKit
 protocol HomePresenterProtocol {
     var currentWeatherData: CurrentWeatherData? { get set }
     var dailyForecasts: [Forecast] { get set }
+    var viewController: HomeViewController? { get set }
 
     func registerCells(collectionView: UICollectionView)
     func setupDelegates(collectionView: UICollectionView)
@@ -18,6 +19,7 @@ protocol HomePresenterProtocol {
     func setTempAndDescriptionLabels(tempLabel: UILabel, descriptionLabel: UILabel)
     func getContextForCurrentConditions() -> WeatherContext
     func getContextForId(id: Int) -> WeatherContext
+    func startUpdatingLocation()
 }
 
 protocol HomeInteractorProtocol {
