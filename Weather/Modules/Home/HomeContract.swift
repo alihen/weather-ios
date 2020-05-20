@@ -15,6 +15,7 @@ protocol HomePresenterProtocol {
 
     func registerCells(collectionView: UICollectionView)
     func setupDelegates(collectionView: UICollectionView)
+    func startLocationManager()
     func loadWeatherData(location: String, completion: @escaping (Error?) -> Void)
     func setTempAndDescriptionLabels(tempLabel: UILabel, descriptionLabel: UILabel)
     func getContextForCurrentConditions() -> WeatherContext

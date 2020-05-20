@@ -14,13 +14,12 @@ class HomePresenter: NSObject {
     let interactor: HomeInteractorProtocol
     var currentWeatherData: CurrentWeatherData?
     var dailyForecasts: [Forecast] = []
-    let locationManager = LocationService()
+    var locationManager: LocationService?
     weak var viewController: HomeViewController?
 
     init(interactor: HomeInteractorProtocol = HomeInteractor()) {
         self.interactor = interactor
         super.init()
-        self.locationManager.delegate = self
     }
 }
 
@@ -34,6 +33,11 @@ extension HomePresenter: HomePresenterProtocol {
     func setupDelegates(collectionView: UICollectionView) {
         collectionView.delegate = self
         collectionView.dataSource = self
+    }
+
+    func startLocationManager() {
+        locationManager = LocationService()
+        locationManager?.delegate = self
     }
 
     func loadWeatherData(location: String, completion: @escaping (Error?) -> Void) {
@@ -94,7 +98,7 @@ extension HomePresenter: HomePresenterProtocol {
     }
 
     func startUpdatingLocation() {
-        locationManager.startUpdatingLocation()
+        locationManager?.startUpdatingLocation()
     }
 
     private func saveLocation(location: String) {
@@ -114,8 +118,14 @@ extension HomePresenter: CLLocationManagerDelegate {
         switch status {
         case .authorizedWhenInUse, .authorizedAlways:
             break
+        case .denied:
+            let error = LocationError.customError("Unable to get your location. Please search for a location.")
+            if viewController?.location == nil {
+                viewController?.presentError(error: error, handler: {
+                    self.viewController?.rightButtonAction()
+                })
+            }
         default:
-            
             break
         }
     }
@@ -125,8 +135,8 @@ extension HomePresenter: CLLocationManagerDelegate {
             return
         }
         
-        locationManager.stopUpdatingLocation()
-        locationManager.getPlaceForCurrentLocation { placemark in
+        locationManager?.stopUpdatingLocation()
+        locationManager?.getPlaceForCurrentLocation { placemark in
             if
                 let locality = placemark?.locality,
                 let country = placemark?.country {

@@ -18,6 +18,7 @@
 		F202E5E324746762009A674E /* MockHomeInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F202E5E224746762009A674E /* MockHomeInteractor.swift */; };
 		F202E5E524747613009A674E /* HomeInteractorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = F202E5E424747613009A674E /* HomeInteractorSpec.swift */; };
 		F22B104E247169DC00960CF4 /* city_weather_api_error_stub.json in Resources */ = {isa = PBXBuildFile; fileRef = F22B104D247169DC00960CF4 /* city_weather_api_error_stub.json */; };
+		F23CF1412475B33500714ECC /* LocationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23CF1402475B33500714ECC /* LocationError.swift */; };
 		F2738F52247138A6006B8F99 /* city_weather_success_stub.json in Resources */ = {isa = PBXBuildFile; fileRef = F2738F51247138A6006B8F99 /* city_weather_success_stub.json */; };
 		F2738F54247138BE006B8F99 /* city_forecast_success_stub.json in Resources */ = {isa = PBXBuildFile; fileRef = F2738F53247138BE006B8F99 /* city_forecast_success_stub.json */; };
 		F2738F5624716041006B8F99 /* TestStubHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2738F5524716041006B8F99 /* TestStubHelper.swift */; };
@@ -74,6 +75,7 @@
 		F202E5E224746762009A674E /* MockHomeInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHomeInteractor.swift; sourceTree = "<group>"; };
 		F202E5E424747613009A674E /* HomeInteractorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeInteractorSpec.swift; sourceTree = "<group>"; };
 		F22B104D247169DC00960CF4 /* city_weather_api_error_stub.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = city_weather_api_error_stub.json; sourceTree = "<group>"; };
+		F23CF1402475B33500714ECC /* LocationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationError.swift; sourceTree = "<group>"; };
 		F2738F51247138A6006B8F99 /* city_weather_success_stub.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = city_weather_success_stub.json; sourceTree = "<group>"; };
 		F2738F53247138BE006B8F99 /* city_forecast_success_stub.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = city_forecast_success_stub.json; sourceTree = "<group>"; };
 		F2738F5524716041006B8F99 /* TestStubHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStubHelper.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				F2BF0A4B246FE2260055380C /* APIResponseError.swift */,
 				F2DBF59424702FC300AE39FE /* AppColors.swift */,
 				F202E5D624745039009A674E /* WeatherContext.swift */,
+				F23CF1402475B33500714ECC /* LocationError.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -526,6 +529,7 @@
 				F2DBF59524702FC300AE39FE /* AppColors.swift in Sources */,
 				F2DBF59C24703FF000AE39FE /* SummaryCollectionViewCell.swift in Sources */,
 				F2DBF599247034C700AE39FE /* ForecastCollectionViewCell.swift in Sources */,
+				F23CF1412475B33500714ECC /* LocationError.swift in Sources */,
 				F2DBF59024702B6400AE39FE /* HomeContract.swift in Sources */,
 				F2DBF58A24702B4300AE39FE /* HomeViewController.swift in Sources */,
 				F2DBF58E24702B5900AE39FE /* HomeInteractor.swift in Sources */,

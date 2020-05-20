@@ -14,7 +14,7 @@ class SummaryCollectionViewCell: UICollectionViewCell {
 
     let tempLabel: UILabel = {
         let lbl = UILabel(autolayout: true)
-        lbl.text = "15°"
+        lbl.text = "--°"
         lbl.textAlignment = .center
         lbl.textColor = UIColor.white
         return lbl

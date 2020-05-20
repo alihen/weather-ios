@@ -69,6 +69,7 @@ class HomeViewController: UIViewController {
 
         presenter.registerCells(collectionView: detailCollectionView)
         presenter.setupDelegates(collectionView: detailCollectionView)
+        presenter.startLocationManager()
         presenter.viewController = self
 
         location = presenter.getSavedLocation()
@@ -83,14 +84,16 @@ class HomeViewController: UIViewController {
             return
         }
         self.title = location
-        presenter.loadWeatherData(location: location) { (error) in
+        presenter.loadWeatherData(location: location) { [weak self] (error) in
             DispatchQueue.main.async {
-                self.refreshControl.endRefreshing()
+                self?.refreshControl.endRefreshing()
                 if error == nil {
-                    self.detailCollectionView.reloadData()
-                    self.updateLabels()
-                    self.updateContext()
+                    self?.detailCollectionView.reloadData()
+                    self?.updateLabels()
+                    self?.updateContext()
+                    return
                 }
+                self?.presentError(error: error)
             }
         }
     }
@@ -115,6 +118,24 @@ class HomeViewController: UIViewController {
                           animations: {
                             self.mainTempImageView.image = newImage
         })
+    }
+
+    func presentError(error: Error?, handler: @escaping () -> Void = {}) {
+        var errorMessage = error?.localizedDescription ?? "An unknown error occurred" 
+        if let apiResponseError = error as? APIResponseError {
+            errorMessage = apiResponseError.localizedDescription
+        }
+
+        if let locationError = error as? LocationError {
+            errorMessage = locationError.localizedDescription
+        }
+
+        let alertController = UIAlertController(title: "Something went wrong", message: errorMessage, preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action:UIAlertAction) in
+            handler()
+        }
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
     }
 
     func setupNavigationBar() {
