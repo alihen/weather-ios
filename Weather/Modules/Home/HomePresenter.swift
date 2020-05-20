@@ -37,16 +37,23 @@ extension HomePresenter: HomePresenterProtocol {
     }
 
     func loadWeatherData(location: String, completion: @escaping (Error?) -> Void) {
-        interactor.getWeatherData(location: location) { (weatherData, error) in
+        saveLocation(location: location)
+        interactor.getWeatherData(location: location) { (weatherData, weatherError) in
             if weatherData != nil {
                 self.currentWeatherData = weatherData
             }
 
-            self.interactor.getForecastData(location: location) { (forecasts, error) in
+            self.interactor.getForecastData(location: location) { (forecasts, forecastError) in
                 if let forecasts = forecasts {
                     self.dailyForecasts = forecasts
                 }
-                completion(error)
+
+                if weatherError != nil {
+                    completion(weatherError)
+                } else {
+                    completion(forecastError)
+                }
+
             }
         }
     }
@@ -89,6 +96,14 @@ extension HomePresenter: HomePresenterProtocol {
     func startUpdatingLocation() {
         locationManager.startUpdatingLocation()
     }
+
+    private func saveLocation(location: String) {
+        UserDefaults.standard.set(location, forKey: "saved-location")
+    }
+
+    func getSavedLocation() -> String? {
+        return UserDefaults.standard.string(forKey: "saved-location")
+    }
 }
 
 extension HomePresenter: CLLocationManagerDelegate {
@@ -100,6 +115,7 @@ extension HomePresenter: CLLocationManagerDelegate {
         case .authorizedWhenInUse, .authorizedAlways:
             break
         default:
+            
             break
         }
     }

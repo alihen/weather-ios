@@ -26,7 +26,6 @@ class LocationService: NSObject {
         super.init()
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
         self.locationManager.requestWhenInUseAuthorization()
-        self.locationManager.startUpdatingLocation()
     }
 
     func startUpdatingLocation() {

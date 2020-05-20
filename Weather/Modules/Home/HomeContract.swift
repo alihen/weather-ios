@@ -20,6 +20,7 @@ protocol HomePresenterProtocol {
     func getContextForCurrentConditions() -> WeatherContext
     func getContextForId(id: Int) -> WeatherContext
     func startUpdatingLocation()
+    func getSavedLocation() -> String?
 }
 
 protocol HomeInteractorProtocol {

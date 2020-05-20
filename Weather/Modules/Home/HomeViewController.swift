@@ -70,6 +70,11 @@ class HomeViewController: UIViewController {
         presenter.registerCells(collectionView: detailCollectionView)
         presenter.setupDelegates(collectionView: detailCollectionView)
         presenter.viewController = self
+
+        location = presenter.getSavedLocation()
+        if location == nil {
+            presenter.startUpdatingLocation()
+        }
         loadWeatherInfo()
     }
 
@@ -96,6 +101,7 @@ class HomeViewController: UIViewController {
 
     func updateContext() {
         weatherContext = presenter.getContextForCurrentConditions()
+        self.mainTempLabel.sizeToFit()
         UIView.animate(withDuration: 0.5) {
             self.detailCollectionView.backgroundColor = self.weatherContext.color
             self.titleConstraint?.constant = self.weatherContext.titleYOffset
