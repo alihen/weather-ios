@@ -48,4 +48,13 @@ class APIService {
 enum APIError: Error {
     case invalidURL
     case networkError(Error)
+
+    var localizedDescription: String {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .networkError(let error):
+            return error.localizedDescription
+        }
+    }
 }

@@ -9,17 +9,17 @@
 import Foundation
 
 struct CurrentWeatherData: Decodable {
-    let coord: WeatherCoordinates
+    let coord: WeatherCoordinates?
     let weather: [WeatherMeta]
-    let base: String
+    let base: String?
     let main: MainInfo
-    let visibility: Int
-    let wind: WindInfo
-    let clouds: CloudInfo
+    let visibility: Int?
+    let wind: WindInfo?
+    let clouds: CloudInfo?
     let timestamp: Int
-    let sysInfo: SysInfo
-    let id: Int
-    let name: String
+    let sysInfo: SysInfo?
+    let id: Int?
+    let name: String?
 
     enum CodingKeys: String, CodingKey {
         case coord, weather, base, main, visibility, wind, clouds
@@ -30,7 +30,7 @@ struct CurrentWeatherData: Decodable {
 
     struct MainInfo: Decodable {
         let temp: Double
-        let pressure, humidity: Int
+        let pressure, humidity: Int?
         let tempMin, tempMax: Double
 
         enum CodingKeys: String, CodingKey {
@@ -41,28 +41,28 @@ struct CurrentWeatherData: Decodable {
     }
 
     struct SysInfo: Decodable {
-        let type, id: Int
-        let country: String
-        let sunrise, sunset: Int
+        let type, id: Int?
+        let country: String?
+        let sunrise, sunset: Int?
     }
 }
 
 struct CloudInfo: Decodable {
-    let all: Int
+    let all: Int?
 }
 
 struct WeatherCoordinates: Decodable {
-    let lon, lat: Double
+    let lon, lat: Double?
 }
 
 struct WindInfo: Decodable {
-    let speed: Double
-    let deg: Int
+    let speed: Double?
+    let deg: Int?
 }
 
 struct WeatherMeta: Decodable {
-    let id: Int
-    let main, weatherDescription, icon: String
+    let id: Int?
+    let main, weatherDescription, icon: String?
 
     enum CodingKeys: String, CodingKey {
         case id, main

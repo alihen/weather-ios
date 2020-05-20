@@ -13,18 +13,11 @@ import Nimble
 
 class WeatherAPIServiceSpec: QuickSpec {
 
-    private func setupMockWeatherService(stub: String) -> WeatherAPIService {
-        let session = MockURLSession()
-        let service = WeatherAPIService(session: session)
-        session.data = TestStubHelper.dataFromStub(named: stub)
-        return service
-    }
-
     override func spec() {
         describe("WeatherAPIService") {
             context("when it fetches the current weather") {
                 it("should be able to retrieve the correct weather data") {
-                    let weatherService = self.setupMockWeatherService(stub: "city_weather_success_stub")
+                    let weatherService = TestStubHelper.setupMockWeatherService(stub: "city_weather_success_stub")
                     weatherService.getCurrentWeatherData(forLocation: "Cape Town") { result in
                         switch result {
                         case .success(let weather):
@@ -37,7 +30,7 @@ class WeatherAPIServiceSpec: QuickSpec {
                 }
 
                 it("should return the appropriate error when fetching malformed data") {
-                    let weatherService = self.setupMockWeatherService(stub: "city_weather_malformed_stub")
+                    let weatherService = TestStubHelper.setupMockWeatherService(stub: "city_weather_malformed_stub")
                     weatherService.getCurrentWeatherData(forLocation: "Cape Town") { result in
                         switch result {
                         case .success(let weather):
@@ -50,7 +43,7 @@ class WeatherAPIServiceSpec: QuickSpec {
                 }
 
                 it("should return an API Response Erro when encountering an API error") {
-                    let weatherService = self.setupMockWeatherService(stub: "city_weather_api_error_stub")
+                    let weatherService = TestStubHelper.setupMockWeatherService(stub: "city_weather_api_error_stub")
                     weatherService.getCurrentWeatherData(forLocation: "Cape Town") { result in
                         switch result {
                         case .success(let weather):
@@ -65,7 +58,7 @@ class WeatherAPIServiceSpec: QuickSpec {
 
             context("when it fetches the 5 day forecast") {
                 it("should be able to retrieve the correct weather data") {
-                    let weatherService = self.setupMockWeatherService(stub: "city_forecast_success_stub")
+                    let weatherService = TestStubHelper.setupMockWeatherService(stub: "city_forecast_success_stub")
                     weatherService.getDailyWeatherForecast(forLocation: "Cape Town") { result in
                         switch result {
                         case .success(let weather):

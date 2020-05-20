@@ -7,8 +7,23 @@
 //
 
 import UIKit
+import CoreLocation
 
 class HomePresenter: NSObject {
+
+    let interactor: HomeInteractorProtocol
+    var currentWeatherData: CurrentWeatherData?
+    var dailyForecasts: [Forecast] = []
+    var locationManager: LocationService?
+    weak var viewController: HomeViewController?
+
+    init(interactor: HomeInteractorProtocol = HomeInteractor()) {
+        self.interactor = interactor
+        super.init()
+    }
+}
+
+extension HomePresenter: HomePresenterProtocol {
 
     func registerCells(collectionView: UICollectionView) {
         collectionView.register(ForecastCollectionViewCell.self, forCellWithReuseIdentifier: ForecastCollectionViewCell.reuseId)
@@ -19,44 +34,115 @@ class HomePresenter: NSObject {
         collectionView.delegate = self
         collectionView.dataSource = self
     }
+
+    func startLocationManager() {
+        locationManager = LocationService()
+        locationManager?.delegate = self
+    }
+
+    func loadWeatherData(location: String, completion: @escaping (Error?) -> Void) {
+        saveLocation(location: location)
+        interactor.getWeatherData(location: location) { (weatherData, weatherError) in
+            if weatherData != nil {
+                self.currentWeatherData = weatherData
+            }
+
+            self.interactor.getForecastData(location: location) { (forecasts, forecastError) in
+                if let forecasts = forecasts {
+                    self.dailyForecasts = forecasts
+                }
+
+                if weatherError != nil {
+                    completion(weatherError)
+                } else {
+                    completion(forecastError)
+                }
+
+            }
+        }
+    }
+
+    func setTempAndDescriptionLabels(tempLabel: UILabel, descriptionLabel: UILabel) {
+        guard
+            let weatherData = currentWeatherData,
+            let currentConditions = weatherData.weather.first?.weatherDescription else {
+            return
+        }
+
+        let currentTemp = Int(weatherData.main.temp.rounded())
+
+        tempLabel.text = "\(currentTemp)°"
+        descriptionLabel.text = currentConditions.uppercased()
+    }
+
+    func getContextForCurrentConditions() -> WeatherContext {
+        guard let weatherCode = currentWeatherData?.weather.first?.id else {
+            return .sunny
+        }
+        return getContextForId(id: weatherCode)
+    }
+
+    func getContextForId(id: Int) -> WeatherContext {
+        switch id {
+        case 200..<600:
+            return .rainy
+        case 600..<700:
+            return .cloudy
+        case 800:
+            return .sunny
+        case 801..<900:
+            return .cloudy
+        default:
+            return .sunny
+        }
+    }
+
+    func startUpdatingLocation() {
+        locationManager?.startUpdatingLocation()
+    }
+
+    private func saveLocation(location: String) {
+        UserDefaults.standard.set(location, forKey: "saved-location")
+    }
+
+    func getSavedLocation() -> String? {
+        return UserDefaults.standard.string(forKey: "saved-location")
+    }
 }
 
-extension HomePresenter: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
-    }
+extension HomePresenter: CLLocationManagerDelegate {
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return 3
+    func locationManager(_ manager: CLLocationManager,
+                         didChangeAuthorization status: CLAuthorizationStatus) {
+
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+            break
+        case .denied:
+            let error = LocationError.customError("Unable to get your location. Please search for a location.")
+            if viewController?.location == nil {
+                viewController?.presentError(error: error, handler: {
+                    self.viewController?.rightButtonAction()
+                })
+            }
         default:
-            return 5
+            break
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SummaryCollectionViewCell.reuseId, for: indexPath) as! SummaryCollectionViewCell
-            cell.styleCell(item: indexPath.row)
-            return cell
-        default:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ForecastCollectionViewCell.reuseId, for: indexPath) as! ForecastCollectionViewCell
-            return cell
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if locations.isEmpty {
+            return
         }
-    }
-}
-
-extension HomePresenter: UICollectionViewDelegateFlowLayout {
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        switch indexPath.section {
-        case 0:
-            return CGSize(width: (UIScreen.main.bounds.width/3)-10, height: 48)
-        default:
-            return CGSize(width: UIScreen.main.bounds.width, height: 40)
+        
+        locationManager?.stopUpdatingLocation()
+        locationManager?.getPlaceForCurrentLocation { placemark in
+            if
+                let locality = placemark?.locality,
+                let country = placemark?.country {
+                self.viewController?.location = "\(locality), \(country)"
+                self.viewController?.loadWeatherInfo()
+            }
         }
-
     }
 }

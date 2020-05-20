@@ -20,6 +20,9 @@ enum APIResponseError: Error {
         case .decodingError(let decodingError):
             return decodingError.localizedDescription
         case .unknown(let unknownError):
+            if let apiError = unknownError as? APIError {
+                return apiError.localizedDescription
+            }
             return unknownError.localizedDescription
         }
     }

@@ -50,7 +50,8 @@ extension WeatherAPIRoute: APIDefinition {
         case .currentWeather(let query), .forecastDaily(let query):
             return [
                 URLQueryItem(name: "q", value: query),
-                URLQueryItem(name: "appid", value: "4a6385d50898e1b147ad6f3a2a3c4929")
+                URLQueryItem(name: "appid", value: "4a6385d50898e1b147ad6f3a2a3c4929"),
+                URLQueryItem(name: "units", value: "metric")
             ]
         }
     }

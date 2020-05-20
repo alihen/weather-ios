@@ -1,20 +1,28 @@
 PODS:
+  - GoogleMaps/Base (3.8.2)
+  - GooglePlaces (3.8.2):
+    - GoogleMaps/Base (= 3.8.2)
   - Nimble (8.0.8)
   - Quick (2.2.0)
 
 DEPENDENCIES:
+  - GooglePlaces
   - Nimble (= 8.0.8)
   - Quick (= 2.2.0)
 
 SPEC REPOS:
   trunk:
+    - GoogleMaps
+    - GooglePlaces
     - Nimble
     - Quick
 
 SPEC CHECKSUMS:
+  GoogleMaps: ae0efe10e9c40bcd9decd0c9fd53d947af7801a3
+  GooglePlaces: 8baf0c60e318431ca3c1b022f2745a23b104caca
   Nimble: 2da33c44adfde49552d4a6b3ef16039a45bf8dca
   Quick: 7fb19e13be07b5dfb3b90d4f9824c855a11af40e
 
-PODFILE CHECKSUM: 1af1945d6a4cef9f3a3a13bd276e111b2c6d32eb
+PODFILE CHECKSUM: 700b6cd7628ce6aa98c4ce1ab225d42c37aa38ca
 
 COCOAPODS: 1.9.1
